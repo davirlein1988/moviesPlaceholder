@@ -26,6 +26,26 @@ app.get('/api/genres/:id', (req, res) => {
     res.send(genre);
 } );
 
+//Post request for genres
+app.post("/api/genres/", (req, res) => {
+    const {error} = validateGenre(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+    const genre = {
+        id: genres.length + 1,
+        genre: req.body.genre
+    };
+    genres.push(genre);
+    res.send(genre);
+});
+
+
+//validation with Joi
+function validateGenre(genre) {
+    const schema = {
+        genre: Joi.string().min(4).required()
+    };
+    return Joi.validate(genre, schema);
+}
 
 //Port
 const port = process.env.PORT || 4000;
